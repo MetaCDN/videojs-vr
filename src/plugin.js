@@ -11,6 +11,7 @@ import * as utils from './utils';
 import CanvasPlayerControls from './canvas-player-controls';
 import OmnitoneController from './omnitone-controller';
 import { DeviceOrientationControls } from '../vendor/three/DeviceOrientationControls.js';
+// import controls_back10 from '../src/img/controls_back10.png';
 
 // WebXR related imports
 import WebXRPolyfill from 'webxr-polyfill';
