@@ -11,7 +11,7 @@ import * as utils from './utils';
 import CanvasPlayerControls from './canvas-player-controls';
 import OmnitoneController from './omnitone-controller';
 import { DeviceOrientationControls } from '../vendor/three/DeviceOrientationControls.js';
-// import controls_back10 from '../src/img/controls_back10.png';
+import imgUx from './img';
 
 // WebXR related imports
 import WebXRPolyfill from 'webxr-polyfill';
@@ -675,7 +675,13 @@ void main() {
     let height = this.player_.currentHeight();
 
     if (this.webVREffect) {
-      this.webVREffect.setSize(width, height, false);
+      try {
+        if (this.webVREffect.getVRDisplay()) {
+          this.webVREffect.setSize(width, height, false);
+        }
+      } catch (error) {
+        videojs.log.error('videojs-vr: resize: ' + error);
+      }
     } else if (this.currentSession) {
       width = window.innerWidth / 2;
       height = window.innerHeight;
@@ -1067,7 +1073,7 @@ void main() {
     const buttonGeometry = new THREE.BoxGeometry(0.3, 0.3, 0.05);
 
     // ExitVR
-    const textureExitImmersive = new THREE.TextureLoader().load('../dist/videojs-vr-ux/img/controls_exitimmersive.png');
+    const textureExitImmersive = new THREE.TextureLoader().load(imgUx.textureExitImmersive);
 
     textureExitImmersive.repeat.set(1, 1);
     this.buttonExit = new THREE.Mesh(buttonGeometry, new THREE.MeshLambertMaterial({ map: textureExitImmersive, color: 0xffffff, side: THREE.DoubleSide}));
@@ -1077,7 +1083,7 @@ void main() {
     this.controls.add(this.buttonExit);
 
     // Rewind 10 secs
-    const textureBack10 = new THREE.TextureLoader().load('../dist/videojs-vr-ux/img/controls_back10.png');
+    const textureBack10 = new THREE.TextureLoader().load(imgUx.textureBack10);
 
     textureBack10.repeat.set(1, 1);
     this.buttonBack10 = new THREE.Mesh(buttonGeometry, new THREE.MeshLambertMaterial({ map: textureBack10, color: 0xffffff, side: THREE.DoubleSide}));
@@ -1087,7 +1093,7 @@ void main() {
     this.controls.add(this.buttonBack10);
 
     // Play/Pause toggle
-    const texturePlayPause = new THREE.TextureLoader().load('../dist/videojs-vr-ux/img/controls_pause.png');
+    const texturePlayPause = new THREE.TextureLoader().load(imgUx.texturePlayPause);
 
     texturePlayPause.repeat.set(1, 1);
     this.buttonPlayPause = new THREE.Mesh(buttonGeometry, new THREE.MeshLambertMaterial({ map: texturePlayPause, color: 0xffffff, side: THREE.DoubleSide}));
@@ -1097,7 +1103,7 @@ void main() {
     this.controls.add(this.buttonPlayPause);
 
     // Forward 10 secs
-    const textureForward10 = new THREE.TextureLoader().load('../dist/videojs-vr-ux/img/controls_forward10.png');
+    const textureForward10 = new THREE.TextureLoader().load(imgUx.textureForward10);
 
     textureForward10.repeat.set(1, 1);
     this.buttonForward10 = new THREE.Mesh(buttonGeometry, new THREE.MeshLambertMaterial({ map: textureForward10, color: 0xffffff, side: THREE.DoubleSide}));
