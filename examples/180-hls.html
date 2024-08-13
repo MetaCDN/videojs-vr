@@ -1,0 +1,31 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>videojs-vr Demo</title>
+   <link href="../node_modules/video.js/dist/video-js.css" rel="stylesheet">
+   <link href="../dist/videojs-vr.css" rel="stylesheet">
+</head>
+<body>
+  <video width="640" height="300" id="videojs-vr-player" class="video-js vjs-default-skin" controls playsinline>
+    <source src="https://kevleyski.github.io/reckless_in_pyrmont/hls_fmp4_byterange/reckless_in_pyrmont.m3u8" type="application/vnd.apple.mpegurl">
+  </video>
+  <ul>
+    <li><a href="../">return to main example</a></li>
+  </ul>
+  <script src="../node_modules/video.js/dist/video.js"></script>
+  <script src="../dist/videojs-vr.js"></script>
+  <script>
+    (function(window, videojs) {
+      var player = window.player = videojs('videojs-vr-player');
+      player.mediainfo = player.mediainfo || {};
+      player.mediainfo.projection = '180_MONO';
+
+      var vr = window.vr = player.vr({projection: '180_MONO', debug: true, forceCardboard: false});
+    }(window, window.videojs));
+  </script>
+
+  <script src="examples.js"></script>
+
+</body>
+</html>
