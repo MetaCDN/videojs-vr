@@ -10,8 +10,8 @@ class VRButton {
 
       async function onSessionStarted( session ) {
         // KJSL: 8K aliasing issue workaround/test
-        const rendererWidth = 3840; // window.innerWidth;
-        const rendererHeight = 3840; // window.innerHeight;
+        const rendererWidth = 2064; // window.innerWidth;
+        const rendererHeight = 2064; // window.innerHeight;
         console.log("Renderer resize to " + rendererWidth, rendererHeight);
         renderer.setSize(rendererWidth, rendererHeight);
 

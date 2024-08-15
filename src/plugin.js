@@ -675,8 +675,8 @@ void main() {
     let height = this.player_.currentHeight();
 
     // KJSL: 8K aliasing issue workaround/test
-    width = 3840;
-    height = 3840;
+    width = 2064;
+    height = 2064;
 
     if (this.webVREffect) {
       try {
@@ -787,9 +787,9 @@ void main() {
     };
 
     // KJSL: 8K aliasing issue workaround/test
-    const rendererWidth = 3840;
+    const rendererWidth = 2064;
     /* this.player_.currentWidth(); */
-    const rendererHeight = 3840;
+    const rendererHeight = 2064;
     /* this.player_.currentHeight(); */
 
     this.renderer.setSize(rendererWidth, rendererHeight, true);
