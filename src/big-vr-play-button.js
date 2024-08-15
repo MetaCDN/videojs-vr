@@ -1,6 +1,8 @@
 import videojs from 'video.js';
 import window from 'global/window';
 
+let xrMediaFactory = null;
+
 const BigPlayButton = videojs.getComponent('BigPlayButton');
 
 class BigVrPlayButton extends BigPlayButton {
@@ -10,13 +12,48 @@ class BigVrPlayButton extends BigPlayButton {
 
   async onSessionStarted(session) {
     await window.navigator.xr.setSession(session);
+
+    xrMediaFactory = new global.XRMediaBinding(session);
+    session.requestReferenceSpace('local').then((refSpace) => {
+      const player = videojs.getAllPlayers()[0];
+
+      if (player) {
+        const video = player.tech({IWillNotUseThisInPlugins: true}).el();
+
+        if (player.mediainfo && player.mediainfo.projection) {
+          const is360 = player.mediainfo.projection.indexOf('360') !== -1;
+
+          if (player.mediainfo.projection.indexOf('MONO') !== -1) {
+            const layer = xrMediaFactory.createEquirectLayer(video, {
+              space: refSpace,
+              centralHorizontalAngle: (is360) ? Math.PI * 2 : Math.PI,
+              layout: 'mono'
+            });
+
+            session.updateRenderState({layers: [layer]});
+            player.isUsingLayers = true;
+          } else {
+            const isTopBottom = player.mediainfo.projection.indexOf('TB') !== -1;
+
+            const layer = xrMediaFactory.createEquirectLayer(video, {
+              space: refSpace,
+              centralHorizontalAngle: (is360) ? Math.PI * 2 : Math.PI,
+              layout: (isTopBottom) ? 'stereo-top-bottom' : 'stereo-left-right'
+            });
+
+            session.updateRenderState({layers: [layer]});
+            player.isUsingLayers = true;
+          }
+        }
+      }
+    });
   }
 
   handleClick(event) {
     // For iOS we need permission for the device orientation data, this will pop up an 'Allow' if not already set
     // eslint-disable-next-line
     if (typeof window.DeviceMotionEvent === 'function' &&
-        typeof window.DeviceMotionEvent.requestPermission === 'function') {
+      typeof window.DeviceMotionEvent.requestPermission === 'function') {
       window.DeviceMotionEvent.requestPermission().then(response => {
         if (response !== 'granted') {
           this.log('DeviceMotionEvent permissions not set');
@@ -24,14 +61,13 @@ class BigVrPlayButton extends BigPlayButton {
       });
     }
 
-    if (window.navigator.xr && window.navigator.xr.requestSession) {
+    if (window.navigator.xr) {
       const sessionInit = {optionalFeatures: ['local-floor', 'bounded-floor', 'hand-tracking']};
       const self = this;
 
-      window.navigator.xr.requestSession('immersive-vr', sessionInit).then(self.onSessionStarted).catch(_ => {
-        // immersive-vr not supported
-      });
+      window.navigator.xr.requestSession('immersive-vr', sessionInit).then(self.onSessionStarted).catch();
     }
+
     super.handleClick(event);
   }
 }
