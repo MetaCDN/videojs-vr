@@ -674,6 +674,10 @@ void main() {
     let width = this.player_.currentWidth();
     let height = this.player_.currentHeight();
 
+    // KJSL: 8K aliasing issue workaround/test
+    width = 3840;
+    height = 3840;
+
     if (this.webVREffect) {
       try {
         if (this.webVREffect.getVRDisplay()) {
@@ -693,6 +697,14 @@ void main() {
     if (height < 300) {
       height = 300;
     }
+
+    // KJSL: 8K aliasing issue workaround/test
+    const isPresenting = this.renderer.xr.isPresenting;
+
+    this.renderer.xr.isPresenting = false;
+    this.renderer.setSize(width, height);
+    this.renderer.xr.isPresenting = isPresenting;
+
     this.camera.aspect = width / height;
     this.camera.updateProjectionMatrix();
   }
@@ -774,7 +786,13 @@ void main() {
       }
     };
 
-    this.renderer.setSize(this.player_.currentWidth(), this.player_.currentHeight(), false);
+    // KJSL: 8K aliasing issue workaround/test
+    const rendererWidth = 3840;
+    /* this.player_.currentWidth(); */
+    const rendererHeight = 3840;
+    /* this.player_.currentHeight(); */
+
+    this.renderer.setSize(rendererWidth, rendererHeight, true);
 
     this.vrDisplay = null;
 
